@@ -6,6 +6,8 @@ import re
 import socket
 import os
 from subprocess import Popen, PIPE, STDOUT
+import glob
+from PIL import Image, ImageTk
 
 def text_update(input=""):
     t1.insert("end", input + '\n\r')
@@ -18,8 +20,14 @@ def clear():
     #entry2.delete(0, tk.END)
     entry3.delete(0, tk.END)
 
+def findLatestImage(path):
+    list_of_files = glob.glob(path + "\\temp\\cos_scope_image\\*.png")
+    latest_file = max(list_of_files, key=os.path.getctime)
+    return latest_file
+
 def checkPassFail(str):
     str.lower()
+    # TODO capture the final result from str.
     return True
 
 def lid():
@@ -52,6 +60,7 @@ def lid():
     def run():
         entry1.configure(state="disabled")
         entry3.configure(state="disabled")
+        # TODO change the picture files and customer script.
         camera_pic = r"C:\tmp\APD_1000101040_20230410_145200.png"
         close_lid_pic = r"C:\tmp\APD_1000101040_20230410_145200.png"
         customer_script = r"D:\Project\python\main.py"
@@ -156,6 +165,17 @@ def lid():
         with open(os.path.join(logpath,logfilename), "w") as f:
             f.write(outputTexts)
         final_result=checkPassFail(outputTexts)
+        latestImage = findLatestImage(os.path.dirname(os.path.abspath(customer_script)))
+        osc_image = Image.open(latestImage)
+        osc_image = osc_image.resize((400, 300), Image.LANCZOS)
+        osc_image = ImageTk.PhotoImage(osc_image)
+        if device_serial in osc_image:
+            #TODO remove this text_update line.
+            text_update("latestImage = " + latestImage)
+            pictureBox.configure(image=osc_image)
+            pictureBox.image = osc_image
+            # replace the box at same position.
+            pictureBox.place(x=60,y=240,width=400,height=300)
         result_color = ["light salmon","lightgreen"] [final_result]
         t1.configure(background=result_color)
         entry1.configure(background="white")
@@ -166,7 +186,9 @@ def lid():
 if __name__ == '__main__':
     window = tk.Tk()
     window.title("LCOS Test")
-    window.geometry("1000x500")
+    window.geometry("1200x550")
+    #TODO change the path of blank.png
+    pictureBlank = r"D:\Project\python\blank.png"
 
     logpath=r"C:\tmp" #save log file
     isExist = os.path.exists(logpath)
@@ -176,20 +198,20 @@ if __name__ == '__main__':
     en = tk.Label(master=window,text="EN:", font=("Helvetica",18))
     en.place(x=110,y=10)
     entry1 = tk.Entry(master=window,font=("Times",12))
-    entry1.place(x=160,y=10,width=180,height=30)
+    entry1.place(x=160,y=10,width=280,height=30)
     entry1.configure(background="white")
 
     machine = tk.Label(master=window,text="Machine No.:", font=("Helvetica",18))
     machine.place(x=8,y=50)
     entry2 = tk.Entry(master=window,font=("Times",12))
-    entry2.place(x=160,y=50,width=180,height=30)
+    entry2.place(x=160,y=50,width=280,height=30)
     entry2.insert("end",socket.gethostname())
     entry2.configure(state="disabled")
 
     SN = tk.Label(master=window,text="Substrate SN:", font=("Helvetica",18))
     SN.place(x=0,y=90)
     entry3 = tk.Entry(master=window,font=("Times",12))
-    entry3.place(x=160,y=90,width=180,height=30)
+    entry3.place(x=160,y=90,width=280,height=30)
     entry3.configure(background="white")
 
     test = tk.Label(master=window,text="Test Number:", font=("Helvetica",18))
@@ -202,12 +224,16 @@ if __name__ == '__main__':
 
     t1 = tk.Text(master=window)
     t1.pack(side=tk.RIGHT,fill = tk.Y,expand=True)
-    t1.place(x=350, y=10, width=700, height=450)
+    t1.place(x=480, y=10, width=700, height=530)
 
     run = tk.Button(master=window,text="RUN!",font=("Helvetica",16),command=lid)
     run.place(x=180,y=190,width=100,height=30)
     clear = tk.Button(master=window,text="Clear",font=("Helvetica",16),command=clear)
     clear.place(x=60,y=190,width=100,height=30)
+
+    img_init = tk.PhotoImage(file=pictureBlank)
+    pictureBox = tk.Label(master=window, image=img_init)
+    pictureBox.place(x=60,y=240,width=400,height=300)
 
     window.mainloop()
 
