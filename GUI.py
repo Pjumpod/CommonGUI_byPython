@@ -169,7 +169,7 @@ def lid():
         osc_image = Image.open(latestImage)
         osc_image = osc_image.resize((400, 300), Image.LANCZOS)
         osc_image = ImageTk.PhotoImage(osc_image)
-        if device_serial in osc_image:
+        if device_serial in latestImage:
             #TODO remove this text_update line.
             text_update("latestImage = " + latestImage)
             pictureBox.configure(image=osc_image)
