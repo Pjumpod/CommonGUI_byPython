@@ -33,10 +33,6 @@ def checkPassFail(strResult):
     return True
 
 def runTest():
-    # root_x = 800
-    # root_y = 600
-    # win_x = root_x + 300
-    # win_y = root_y + 100
     entry1.configure(state="disabled")
     entry3.configure(state="disabled")
     # TODO change the picture files and customer script.
@@ -79,8 +75,6 @@ def runTest():
         while cat.poll() is None:
             if "Press enter to move to camera location" in line:
                 a = tk.Tk()
-                # a.geometry("200x200")
-                # a.geometry(f'+{win_x}+{win_y}')
                 a.geometry('+0+0')
                 a.title("Warning!!")
                 p = tk.PhotoImage(master=a, file=camera_pic)  # insert image
@@ -102,7 +96,6 @@ def runTest():
                 line = ""
             if "Press enter when lid is closed" in line:
                 a = tk.Tk()
-                # a.geometry("200x200")
                 a.geometry('+0+0')
                 a.title("Warning!!")
                 p = tk.PhotoImage(master=a, file=close_lid_pic)  # insert image
