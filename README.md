@@ -2,4 +2,4 @@
 GUI created by Python to run the another python script.
 
 # build with command 
-pyinstaller -F --onefile GUI.py
+pyinstaller -F --onefile --windowed GUI.py
