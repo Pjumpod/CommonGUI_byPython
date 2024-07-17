@@ -209,7 +209,7 @@ if __name__ == '__main__':
     logpath=r"C:\tmp" #save log file
     isExist = os.path.exists(logpath)
     if not isExist:
-        os.makedirs(path)
+        os.makedirs(logpath)
 
     en = tk.Label(master=window,text="EN:", font=("Helvetica",18))
     en.place(x=110,y=10)
